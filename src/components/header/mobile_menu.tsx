@@ -50,7 +50,7 @@ const MobileMenu: React.FC<IProps> = ({ open, onClose }) => {
             >
                 <div className='flex items-center justify-between border-b border-line px-5 py-4'>
                     <img
-                        src={content?.logo?.path}
+                        src={content?.logo?.path ?? '/logo-full.png'}
                         alt={content?.brand ?? ''}
                         className='h-8 w-auto'
                     />

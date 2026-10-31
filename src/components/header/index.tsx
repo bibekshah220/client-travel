@@ -12,18 +12,18 @@ import { buttonStyles } from '../common/ui/buttons/button-styles'
 
 const NavBar = () => {
     const { isLoading, user } = useAuth()
-    const { content, isLoading: contentLoading } = useContent()
+    const { content, isLoading: contentLoading, isError: contentError } = useContent()
     const [menuOpen, setMenuOpen] = useState(false)
 
     return (
         <header className='sticky top-0 z-30 border-b border-line bg-white/85 backdrop-blur-md'>
             <Container fluid className='flex h-16 items-center justify-between gap-4 lg:h-[72px]'>
                 <Link to='/' className='shrink-0' aria-label={content?.brand ?? 'Home'}>
-                    {contentLoading ? (
+                    {contentLoading && !contentError ? (
                         <Skeleton className='h-9 w-36' />
                     ) : (
                         <img
-                            src={content?.logo?.path}
+                            src={content?.logo?.path ?? '/logo-full.png'}
                             alt={content?.brand ?? ''}
                             className='h-9 w-auto lg:h-10'
                         />

@@ -3,6 +3,7 @@ import SectionHeading from '../common/section-heading'
 import PackageCard from './package/card'
 import PackageCardSkeleton from './package/card-skeleton'
 import EmptyState from '../common/ui/feedback/empty-state'
+import ErrorState from '../common/ui/feedback/error-state'
 import Container from '../common/ui/layout/container'
 import { getPopularPackage } from '../../api/package.api'
 import type { IPackageResponse } from '../../@types/package.types'
@@ -13,7 +14,7 @@ const PopularPackages = () => {
   const { content } = useContent()
   const copy = content?.sections?.popular_packages
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryFn: () => getPopularPackage({ limit: 4 }),
     queryKey: ['get_popular_package', 'landing']
   })
@@ -28,8 +29,14 @@ const PopularPackages = () => {
         link='/packages'
       />
 
+      {isError && (
+        <div className='mt-8'>
+          <ErrorState onRetry={() => refetch()} />
+        </div>
+      )}
+
       <div className='mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4'>
-        {isLoading &&
+        {isLoading && !isError &&
           Array.from({ length: 4 }).map((_, index) => <PackageCardSkeleton key={index} />)}
 
         {!isLoading &&
@@ -38,7 +45,7 @@ const PopularPackages = () => {
           ))}
       </div>
 
-      {!isLoading && packages.length === 0 && (
+      {!isLoading && !isError && packages.length === 0 && (
         <div className='mt-8'>
           <EmptyState
             icon={<GiMountainRoad size={36} />}

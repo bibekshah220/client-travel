@@ -7,6 +7,7 @@ import PackageCardSkeleton from '../landing/package/card-skeleton'
 import PackageFilters from './filters'
 import Pagination from './pagination'
 import EmptyState from '../common/ui/feedback/empty-state'
+import ErrorState from '../common/ui/feedback/error-state'
 import Container from '../common/ui/layout/container'
 import { getPopularPackage } from '../../api/package.api'
 import type { IPackageResponse } from '../../@types/package.types'
@@ -25,7 +26,7 @@ const AllPackages = () => {
     limit: PAGE_SIZE
   }
 
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading, isFetching, isError, refetch } = useQuery({
     queryFn: () => getPopularPackage(filters),
     queryKey: ['get_popular_package', 'all', filters],
     // hold the previous page on screen while the next one loads, so the
@@ -53,7 +54,7 @@ const AllPackages = () => {
           isFetching && !isLoading ? 'opacity-60' : 'opacity-100'
         ].join(' ')}
       >
-        {isLoading &&
+        {isLoading && !isError &&
           Array.from({ length: 6 }).map((_, index) => <PackageCardSkeleton key={index} />)}
 
         {!isLoading &&
@@ -62,7 +63,7 @@ const AllPackages = () => {
           ))}
       </div>
 
-      {!isLoading && packages.length === 0 && (
+      {!isLoading && !isError && packages.length === 0 && (
         <div className='mt-8'>
           <EmptyState
             icon={<GiMountainRoad size={36} />}
@@ -73,7 +74,13 @@ const AllPackages = () => {
         </div>
       )}
 
-      {pagination && (
+      {isError && (
+        <div className='mt-8'>
+          <ErrorState onRetry={() => refetch()} />
+        </div>
+      )}
+
+      {!isError && pagination && (
         <Pagination
           current_page={pagination.current_page}
           total_pages={pagination.total_pages}

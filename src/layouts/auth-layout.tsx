@@ -35,7 +35,7 @@ const AuthLayout: React.FC<IProps> = ({ title, subtitle, children, wide = false 
                 <div className='relative flex h-full flex-col justify-between p-12'>
                     <Link to='/' aria-label={content?.brand ?? 'Home'}>
                         <img
-                            src={content?.logo?.light_path}
+                            src={content?.logo?.light_path ?? '/logo-light.png'}
                             alt={content?.brand ?? ''}
                             className='h-12 w-auto'
                         />

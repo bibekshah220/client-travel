@@ -20,7 +20,7 @@ const Footer = () => {
         <div className='grid gap-10 sm:grid-cols-2 lg:grid-cols-4'>
           <div className='sm:col-span-2 lg:col-span-1'>
             <img
-              src={content?.logo?.light_path}
+              src={content?.logo?.light_path ?? '/logo-light.png'}
               alt={content?.brand ?? ''}
               className='h-11 w-auto'
             />

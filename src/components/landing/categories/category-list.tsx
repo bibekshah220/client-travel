@@ -3,6 +3,7 @@ import SectionHeading from '../../common/section-heading'
 import CategoryCard from './card'
 import Container from '../../common/ui/layout/container'
 import Skeleton from '../../common/ui/feedback/skeleton'
+import ErrorState from '../../common/ui/feedback/error-state'
 import type { ICategoryResponse } from '../../../@types/package.types'
 import { getCategories } from '../../../api/category.api'
 import { useContent } from '../../../hooks/use-content'
@@ -11,7 +12,7 @@ const CategoryList = () => {
   const { content } = useContent()
   const copy = content?.sections?.categories
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryFn: getCategories,
     queryKey: ['get_package_category']
   })
@@ -26,8 +27,14 @@ const CategoryList = () => {
         link='/packages'
       />
 
+      {isError && (
+        <div className='mt-8'>
+          <ErrorState onRetry={() => refetch()} />
+        </div>
+      )}
+
       <div className='mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {isLoading &&
+        {isLoading && !isError &&
           Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className='h-[72px] rounded-card' />
           ))}
@@ -36,7 +43,7 @@ const CategoryList = () => {
           categories.map((category) => <CategoryCard key={category._id} category={category} />)}
       </div>
 
-      {!isLoading && categories.length === 0 && (
+      {!isLoading && !isError && categories.length === 0 && (
         <p className='mt-8 text-sm text-slate-500'>No categories have been set up yet.</p>
       )}
     </Container>

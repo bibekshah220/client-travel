@@ -4,9 +4,10 @@ import { useContent } from '../../hooks/use-content';
 import Container from '../common/ui/layout/container';
 import { buttonStyles } from '../common/ui/buttons/button-styles';
 import Skeleton from '../common/ui/feedback/skeleton';
+import ErrorState from '../common/ui/feedback/error-state';
 
 const HeroSection = () => {
-    const { content, isLoading } = useContent();
+    const { content, isLoading, isError, refetch } = useContent();
     const hero = content?.hero;
 
     return (
@@ -26,7 +27,16 @@ const HeroSection = () => {
             />
 
             <Container className='flex min-h-[520px] items-center py-20 sm:min-h-[580px] lg:min-h-[660px]'>
-                {isLoading ? (
+                {isError ? (
+                    <div className='w-full max-w-md'>
+                        <ErrorState
+                            compact
+                            title='We could not load the page content'
+                            description='The booking service is not responding right now. Tours may still be browsable.'
+                            onRetry={() => refetch()}
+                        />
+                    </div>
+                ) : isLoading ? (
                     <div className='w-full max-w-xl space-y-4'>
                         <Skeleton className='h-5 w-40 bg-white/20' />
                         <Skeleton className='h-14 w-full bg-white/20' />

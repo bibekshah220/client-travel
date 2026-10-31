@@ -16,9 +16,10 @@ const icons: Record<string, React.ReactNode> = {
 
 /** Sits directly under the hero to answer "why book here" before the catalogue. */
 const TrustStrip = () => {
-    const { content, isLoading } = useContent()
+    const { content, isLoading, isError } = useContent()
     const points: ITrustPoint[] = content?.trust_points ?? []
 
+    if (isError) return null
     if (!isLoading && points.length === 0) return null
 
     return (
